@@ -1,1 +1,1 @@
-Just a bunch of random python programs that I made.
+Python programs that can be useful for anyone working in the domain of offensive security.
