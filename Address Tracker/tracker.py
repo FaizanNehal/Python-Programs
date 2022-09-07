@@ -11,26 +11,44 @@ etherscanAPI ="GCQP7EA7N2F7GAIQ2JW5HVYDTZ9ZSE5VRS"
 addressToTrack=""
 endpointBalance="https://api.etherscan.io/api?module=account&action=balance&address={}&tag=latest&apikey={}"
 endpointInternal="https://api.etherscan.io/api?module=account&action=txlistinternal&address={}&startblock=0&endblock=2702578&page=1&offset=10&sort=asc&apikey={}"
-endpoints=[] #CREATE A NESTED ARRAY WITH EACH ELEMENT CONTAINING TYPE OF TRANACTION AND ENDPOINT
-                #CREATE ATLEAST 5 TYPES OF DATA
-                #SAVE THE RESULT IN ANOTHER NESTED ARRAY
-                # IN THE END SAVE IT IN THE FILE PROPERLY
+endpoints=[["Balance","https://api.etherscan.io/api?module=account&action=balance&address={}&tag=latest&apikey={}"],
+["Internal","https://api.etherscan.io/api?module=account&action=txlistinternal&address={}&startblock=0&endblock=2702578&page=1&offset=10&sort=asc&apikey={}"],
+["Normal","https://api.etherscan.io/api?module=account&action=txlist&address={}&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey={}"],
+["Block Mined","https://api.etherscan.io/api?module=account&action=getminedblocks&address={}&blocktype=blocks&page=1&offset=10&apikey={}"]] 
+
+placeholders=["Balance is: {}","Internal Transactions by the Address: {}","Normal Transaction by Address: {}","Block Mined by Address: {}"]
+                
 
 
 def tracker():
     counter=0
+    Req=""
     for index,addr in enumerate(addresses):
-        print(addr)
-        historyReq= requests.get(endpointBalance.format(addr,etherscanAPI))
-        history= historyReq.json().get("result")
-        counter+=1
+        print(addr) 
         with open("transactions.txt","a") as file:
             file.write("ADDRESS # {}: {}\n".format(index+1,addr))
-            file .write("\tTransactions: {} \n\n".format(history))
-        if counter==5:
-            sleep(2)
-            counter=0
-    pass
+        for ix,x in enumerate(endpoints):
+            for iy,y in enumerate(x):
+                if iy ==0:
+                    with open("transactions.txt","a") as file:
+                        file.write("\t{} Transaction:\n".format(y))
+                    print(y)
+                elif iy ==1:
+                    Req=requests.get(y.format(addr,etherscanAPI))
+                    result=Req.json().get("result")
+                    with open("transactions.txt","a") as file:
+                        file.write("\t\t{}\n".format(placeholders[ix].format(result)))
+                else:
+                    print("RUNNING")
+
+    
+      #  counter+=1
+            
+      #  file .write("\tTransactions: {} \n\n".format(history))
+      #  if counter==5:
+      #      sleep(2)
+      #      counter=0
+    
 
 def main():
     tracker()
