@@ -13,7 +13,17 @@ def main():
         links.append(re.search('href="(.+)"',elements).group(1))
     for elements in links:
         print(elements)
-    
+
+    for ix,x in enumerate(links):
+        print(base+x)
+        recursiveCalls=requests.get(base+x)
+        recursion=True
+        #print(recursiveCalls.text)
+        # with open("./test.txt","a") as file:
+        #     file.write("{}".format(recursiveCalls.text))
+        regexR=re.findall('<a class="js-navigation-open Link--primary(.*?)</a>',recursiveCalls.text)
+        print(len(regexR))
+           
 
 if __name__=="__main__":
     main()
