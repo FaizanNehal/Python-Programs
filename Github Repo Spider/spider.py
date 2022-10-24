@@ -8,7 +8,27 @@ report=[]
 
 githubRepo="https://github.com/orgs/Unipilot/repositories"
 base="https://github.com"
-ignoreForks='<span class="text-small lh-condensed-ultra no-wrap mt-1" data-repository-hovercards-enabled>       forked from'
+#ignoreForks='<span class="text-small lh-condensed-ultra no-wrap mt-1" data-repository-hovercards-enabled>       forked from'
+ignoreForks='forked from'
+privateKeysRegex=['\b[5KL][1-9A-HJ-NP-Za-km-z]{50,51}\b','\bxprv[a-km-zA-HJ-NP-Z1-9]{107,108}\b','\b[0-9a-fA-F]{62}[0][0-9a-fA-F]\b']
+                    # 1st is for BTC   2nd for xpriv 3rd for MONERO
+
+
+def branches():
+                    ### TODO: implement the spider for each of the branches
+    pass
+
+
+def commits():
+                    ### TODO: implement the spider for all the commits and commit history
+    pass
+
+def pullRequests():
+                    ### TODO: implement the spider for open and closed pull requests
+    pass
+
+
+
 
 def main():
     repository=requests.get(githubRepo)
@@ -27,17 +47,21 @@ def main():
         print(base+x)
         recursiveCalls=requests.get(base+x)
         
-        recursion=True
+        
         #print(recursiveCalls.text)
         # with open("./test.txt","a") as file:
         #     file.write("{}".format(recursiveCalls.text))
-        regexR=re.findall('<a class="js-navigation-open Link--primary(.*?)</a>',recursiveCalls.text)
+        
 
-        findFork=re.findall('forked from',recursiveCalls.text)
+                ### IT WILL IGNORE THE REPOSITORIES THAT ARE FORKED ### 
+        findFork=re.findall(ignoreForks,recursiveCalls.text)
         print(findFork)
         if len(findFork) >0:
             links.pop(0)
             continue
+
+                ### GETTING ALL THE DIRECTORIES AND FILES IN THE CURRENT DIRECTORY ####                
+        regexR=re.findall('<a class="js-navigation-open Link--primary(.*?)</a>',recursiveCalls.text)
 
         print("-----------------------")
         print("-----------------------")
